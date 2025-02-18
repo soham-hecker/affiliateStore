@@ -1,0 +1,750 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="referral-id" content="{{ referral_id }}">
+    <title>Affiliate Store</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        .header {
+            background-color: #f8f9fa;
+            padding: 10px;
+            text-align: center;
+            height: 60px;
+        }
+
+        .header h1 {
+            margin: auto auto;
+            color: #fe8e33;
+        }
+
+        .header pre {
+            position: relative;
+            /* left: 20px; */
+            top: -18px;
+            font-weight: bold;
+            font-size: 1.1rem;
+            font-family: "Times New Roman", Times, serif;
+            color: #32a636;
+        }
+
+/* 
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+        } */
+
+        .carousel-container {
+            overflow: hidden;
+            width: 100%;
+            height: 250px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+
+        .banner {
+            display: flex;
+            gap: 20px;
+            transition: transform 0.5s ease-in-out;
+        }
+
+        .banner img {
+            /* width: 300px;
+            height: 107px; */
+            width: 540px;
+            height: 192px;
+            object-fit: cover;
+            transition: transform 0.3s ease-in-out, filter 0.3s ease-in-out;
+            filter: brightness(0.8);
+            /* Default dim effect */
+        }
+
+        .banner .banner1 {
+            position: absolute;
+            left: -330px;
+            top: 30px;
+            border: 2px solid rgb(255, 72, 0);
+        }
+
+        /* -330, 240, 810 */
+
+        .banner .banner2 {
+            position: absolute;
+            border: 2px solid black;
+            left: 240px;
+            top: 30px;
+        }
+
+        .banner .banner3 {
+            position: absolute;
+            border: 2px solid rgb(0, 100, 0);
+            left: 810px;
+            top: 30px;
+        }
+
+        .banner img.enlarged {
+            transform: scale(1.2);
+            /* Enlarge the center banner */
+            filter: brightness(1);
+            /* Brighten the center banner */
+        }
+
+
+
+
+
+
+        .products {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin: 10 20px;
+        }
+
+        .product {
+            /* border: 1px solid #ddd; */
+            border-radius: 5px;
+            margin: 0px;
+            padding: 0px;
+            width: 200px;
+            text-align: center;
+        }
+
+        a h3 {
+            text-decoration: none;
+            margin: 5px 0;
+            font-style: normal;
+        }
+
+        h3 {
+            text-decoration: none;
+        }
+
+        .product img {
+            max-width: 100%;
+            height: auto;
+        }
+
+        p.price {
+            display: inline;
+        }
+
+        p.rating {
+            display: inline;
+        }
+
+
+        .buy-now {
+            display: block;
+            text-decoration: none;
+            background-color: rgb(95, 204, 52);
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 10px;
+        }
+
+        .buy-now:hover {
+            background-color: rgb(107, 226, 59);
+        }
+
+        /* .margin{
+            display: none;
+        } */
+
+
+        .form-popup {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            border: 1px solid #ddd;
+            background-color: white;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            z-index: 1000;
+            border-radius: 12px;
+        }
+
+        .form-popup input {
+            display: block;
+            margin: 10px 0;
+            padding: 10px;
+            width: 90%;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        .form-popup button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .form-popup button:hover {
+            background-color: #0056b3;
+        }
+
+        .custom-alert {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #4caf50;
+            color: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            z-index: 1001;
+            text-align: center;
+        }
+
+        .carousel {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        @media (max-width: 768px) {
+            .product-card {
+                width: 90%;
+            }
+
+            .banner img{
+                height: 114px;
+                width: 320px;
+            }
+
+            .carousel-container{
+                height: 180px;
+            }
+        }
+
+
+        /* body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #f9f9f9;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+    } */
+
+
+        .product-card {
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin: 20px;
+            overflow: hidden;
+            transition: transform 0.3s, box-shadow 0.3s;
+            width: 230px;
+            cursor: pointer;
+        }
+
+        .product-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        }
+
+        .product-card:active {
+            transform: translateY(0);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .product {
+            width: 230px;
+        }
+
+        .product img {
+            width: 230px;
+            height: auto;
+            border-radius: 12px;
+        }
+
+        .product h3 {
+            margin: 0px 8px;
+            font-size: 1.2rem;
+            color: rgb(0, 123, 0);
+            text-align: center;
+        }
+
+        .buy-now {
+            display: block;
+            margin: 10px 20px;
+            padding: 10px 20px;
+            background: linear-gradient(90deg, #ff7b54, #ffae56);
+            color: #fff;
+            border: none;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: background 0.3s, transform 0.2s;
+        }
+
+        .buy-now:hover {
+            background: linear-gradient(90deg, #ff5722, #ff8f22);
+        }
+
+        .buy-now:active {
+            transform: scale(0.95);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="header">
+        <h1 id="greeting">Welcome to Our Store!</h1>
+        <pre>Gift your Family & Yourself a Healthy Life</pre>
+    </div>
+
+    <div id="signUpForm" class="form-popup">
+        <h2>Sign Up</h2>
+        <label for="firstName">First Name</label>
+        <input type="text" id="firstName" placeholder="Your first name (Required)" required>
+
+        <label for="lastName">Last Name</label>
+        <input type="text" id="lastName" placeholder="Your last name (Required)" required>
+
+        <label for="mobile">Mobile Number (Optional)</label>
+        <input type="text" id="mobile" placeholder="Your mobile number (Optional)">
+
+        <button onclick="submitForm()">Submit</button>
+    </div>
+
+
+    <div class="carousel-container">
+        <div class="banner">
+            <img class="banner1" src="https://winzera.com/spaces/banners/6819193e-2ea7-4143-98ee-629093bbc8c2.jpeg"
+                alt="Banner 1">
+                <img class="banner2" src="https://winzera.com/spaces/banners/d0aa8cc9-66d9-4efa-8de8-eabb849b3e33.webp"
+                alt="Banner 2">
+            <img class="banner3" src="https://winzera.com/spaces/banners/49d1d480-ba01-424a-8a2d-c7a94b926844.webp"
+                alt="Banner 3">
+        </div>
+    </div>
+
+
+    <div class="products">
+        <!-- Product 1 -->
+        <div class="product-card" onclick="trackClick('Product 1')">
+            <div class="product">
+                <img src="https://winzera.com/spaces/products/e2e56a05-8132-4245-81de-3be7cd3963ac.jpg" width="210px"
+                    alt="Product 2">
+                <h3>Sea Buckthorn Pulp Concentrate</h3>
+                <p class="price">₹</p>
+                <p class="rating">(92)</p>
+                <a href="#" class="buy-now" onclick="trackClick('Product 1')">Buy Now</a>
+            </div>
+        </div>
+
+        <!-- Product 2 -->
+        <div class="product-card" onclick="trackClick('Product 2')">
+            <div class="product">
+                <img src="https://winzera.com/spaces/products/0b0a0e74-6e9a-4de6-9895-b2a6b1d19058.jpg" width="180px"
+                    alt="Product 2">
+                <h3>Sea Buckthorn DiaboWin</h3>
+                <p class="price">₹</p>
+                <p class="rating">(25)</p>
+                <a href="#" class="buy-now" onclick="trackClick('Product 2')">Buy Now</a>
+            </div>
+        </div>
+
+
+        <!-- Product 3 -->
+        <div class="product-card" onclick="trackClick('Product 3')">
+            <div class="product">
+                <img src="https://winzera.com/spaces/products/2c8b100c-2294-4aae-9d34-b0f4dd969894.jpg" width="180px"
+                    alt="Product 3">
+                <h3>DentoWin Ayurvedic</h3>
+                <p class="price">₹</p>
+                <p class="rating">(54)</p>
+                <a href="#" class="buy-now" onclick="trackClick('Product 3')">Buy Now</a>
+            </div>
+        </div>
+
+        <!-- Product 4 -->
+        <div class="product-card" onclick="trackClick('Product 4')">
+            <div class="product">
+                <img src="https://winzera.com/spaces/products/fad2d592-e6a7-455e-8754-689bee1857d8.jpg" width="180px"
+                    alt="Product 4">
+                <h3>Omega CTC Tea Leaves</h3>
+                <p class="price">₹</p>
+                <p class="rating">(8)</p>
+                <a href="#" class="buy-now" onclick="trackClick('Product 4')">Buy Now</a>
+            </div>
+        </div>
+
+        <!-- Product 5 -->
+        <div class="product-card" onclick="trackClick('Product 5')">
+            <div class="product">
+                <img src="https://winzera.com/spaces/products/1d283e7b-d9f9-4ee1-ad3c-a2cf09579997.jpg" width="180px"
+                    alt="Product 5">
+                <h3>Ubtan Facewash with Beads</h3>
+                <p class="price">₹</p>
+                <p class="rating">(12)</p>
+                <a href="#" class="buy-now" onclick="trackClick('Product 5')">Buy Now</a>
+            </div>
+        </div>
+
+        <!-- Product 6 -->
+        <div class="product-card" onclick="trackClick('Product 6')">
+            <div class="product">
+                <img src="https://winzera.com/spaces/products/d9dbb4ef-b409-4de1-95ba-58e13a0c5907.jpg" width="180px"
+                    alt="Product 6">
+                <h3>Sea Buckthorn Hair Oil</h3>
+                <p class="price">₹</p>
+                <p class="rating">(23)</p>
+                <a href="#" class="buy-now" onclick="trackClick('Product 6')">Buy Now</a>
+            </div>
+        </div>
+
+        <!-- Product 7 -->
+        <div class="product-card" onclick="trackClick('Product 7')">
+            <div class="product">
+                <img src="https://winzera.com/spaces/products/51d9dd95-11d8-4c02-957a-4f501fa1c1cc.jpg" width="180px"
+                    alt="Product 7">
+                <h3>Sea Buckthorn with Turmeric</h3>
+                <p class="price">₹</p>
+                <p class="rating">(4)</p>
+                <a href="#" class="buy-now" onclick="trackClick('Product 7')">Buy Now</a>
+            </div>
+        </div>
+
+        <!-- Product 8 -->
+        <div class="product-card" onclick="trackClick('Product 8')">
+            <div class="product">
+                <img src="https://winzera.com/spaces/products/03f4f1ba-1f96-4027-8a12-3858e483aa91.jpg" width="180px"
+                    alt="Product 8">
+                <h3>Sea Buckthorn FitWin</h3>
+                <p class="price">₹</p>
+                <p class="rating">(0)</p>
+                <a href="#" class="buy-now" onclick="trackClick('Product 8')">Buy Now</a>
+            </div>
+        </div>
+
+
+        <!-- Product 9 -->
+        <div class="product-card" onclick="trackClick('Product 9')">
+            <div class="product">
+                <img src="https://winzera.com/spaces/products/b93db952-bd72-4d44-ba27-49dc7625b34f.jpg" width="180px"
+                    alt="Product 9">
+                <h3>Moringa Powder</h3>
+                <p class="price">₹</p>
+                <p class="rating">(4)</p>
+                <a href="#" class="buy-now" onclick="trackClick('Product 9')">Buy Now</a>
+            </div>
+        </div>
+
+        <!-- Product 10 -->
+        <div class="product-card" onclick="trackClick('Product 10')">
+            <div class="product">
+                <img src="https://winzera.com/spaces/products/f7ecdc57-1d5b-4ba3-81ee-98b5ef20e432.jpg" width="180px"
+                    alt="Product 10">
+                <h3>Sea Buckthorn Dry Berry</h3>
+                <p class="price">₹</p>
+                <p class="rating">(0)</p>
+                <a href="#" class="buy-now" onclick="trackClick('Product 10')">Buy Now</a>
+            </div>
+        </div>
+
+        <!-- Product 11 -->
+        <div class="product-card" onclick="trackClick('Product 11')">
+            <div class="product">
+                <img src="https://winzera.com/spaces/products/d9661a2d-eb33-4a30-98b1-6ae4cfd2ecff.jpg" width="180px"
+                    alt="Product 11">
+                <h3>Sea Buckthorn Oil</h3>
+                <p class="price">₹</p>
+                <p class="rating">(14)</p>
+                <a href="#" class="buy-now" onclick="trackClick('Product 11')">Buy Now</a>
+            </div>
+        </div>
+        <!-- Product 12 -->
+        <div class="product-card" onclick="trackClick('Product 12')">
+            <div class="product">
+                <img src="https://winzera.com/spaces/products/cc8a5a75-2017-49a5-82d0-d575f1a310db.jpg" width="180px"
+                    alt="Product 12">
+                <h3>Amla Bhringraj Shampoo</h3>
+                <p class="price">₹</p>
+                <p class="rating">(41)</p>
+                <a href="#" class="buy-now" onclick="trackClick('Product 12')">Buy Now</a>
+            </div>
+        </div>
+
+        <!-- Product 13 -->
+        <div class="product-card" onclick="trackClick('Product 13')">
+            <div class="product">
+                <img src="https://winzera.com/spaces/products/488086c8-ef68-4261-b826-e80c8d900887.jpg" width="180px"
+                    alt="Product 13">
+                <h3>Sun Screen SPF 50</h3>
+                <p class="price">₹</p>
+                <p class="rating">(16)</p>
+                <a href="#" class="buy-now" onclick="trackClick('Product 13')">Buy Now</a>
+            </div>
+        </div>
+
+        <!-- Product 14 -->
+        <div class="product-card" onclick="trackClick('Product 14')">
+            <div class="product">
+                <img src="https://winzera.com/spaces/products/15c3b55c-0698-41b2-b516-1db1f29e501e.jpg" width="180px"
+                    alt="Product 14">
+                <h3>Tulsi Curcumin Drops
+                    <p class="price">₹</p>
+                    <p class="rating">(32)</p>
+                </h3>
+                <a href="#" class="buy-now" onclick="trackClick('Product 14')">Buy Now</a>
+            </div>
+        </div>
+
+        <!-- Add more products similarly -->
+    </div>
+
+    <script>
+
+        // const referralId = "THW5872";
+        const urlParams = new URLSearchParams(window.location.search);
+        const referralId = urlParams.get('ref') || 'demo02'; // Assuming URL is like ?ref=affiliate1
+
+
+        // Show sign-up form after 5 seconds if names are not stored
+        setTimeout(() => {
+            if (!localStorage.getItem('firstName') || !localStorage.getItem('lastName')) {
+                document.getElementById('signUpForm').style.display = 'block';
+            }
+        }, 5000);
+
+        // Set personalized greeting
+        function setGreeting() {
+            const hours = new Date().getHours();
+            const greeting = (hours > 4 && hours < 12) ? "Good Morning" :
+                (hours >= 12 && hours < 17) ? "Good Afternoon" : "Good Evening";
+            const firstName = localStorage.getItem('firstName');
+            document.getElementById('greeting').textContent = firstName
+                ? `${greeting}, ${firstName}!`
+                : 'Welcome to Our Store!';
+        }
+
+        // Submit form
+        function submitForm() {
+            const firstName = document.getElementById('firstName').value;
+            const lastName = document.getElementById('lastName').value;
+            const mobile = document.getElementById('mobile').value;
+
+            if (firstName && lastName) {
+                localStorage.setItem('firstName', firstName);
+                localStorage.setItem('lastName', lastName);
+                if (mobile) {
+                    localStorage.setItem('mobile', mobile);
+                }
+                document.getElementById('signUpForm').style.display = 'none';
+                setGreeting();
+
+                // Show custom alert
+                const alertBox = document.createElement('div');
+                alertBox.className = 'custom-alert';
+                alertBox.textContent = 'Thank you for signing up!';
+                document.body.appendChild(alertBox);
+
+                setTimeout(() => {
+                    document.body.removeChild(alertBox);
+                }, 3000);
+
+                // Send data to the backend
+                fetch('/add_customer', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        customer_name: firstName + " " + lastName,
+                        mobile_number: mobile,
+                        referral_id: referralId,
+                    }),
+                })
+                    .then((response) => response.json())
+                    .then((data) => {
+                        if (data.message) {
+                            alert(data.message); // Notify user of success
+                        } else if (data.error) {
+                            alert(data.error); // Notify user of any errors
+                        }
+                    })
+                    .catch((error) => console.error('Error:', error));
+
+            } else {
+                alert('First Name and Last Name are required fields.');
+            }
+        }
+
+        // Track clicks
+        function trackClick(productName) {
+
+            const productLinks = {
+                "Product 1": "https://ayuzera.com/SohamOrganicFarm/product-details/sea-buckthorn-pulp-concentrate-300ml-/8908023909008?ref=",
+                "Product 2": "https://ayuzera.com/SohamOrganicFarm/product-details/sea-buckthorn-diabowin-300-ml-/8908023909046?ref=",
+                "Product 3": "https://companydomain.com/product3?ref=",
+                "Product 3": "https://companydomain.com/product3?ref=",
+                "Product 3": "https://companydomain.com/product3?ref=",
+                "Product 3": "https://companydomain.com/product3?ref=",
+                "Product 3": "https://companydomain.com/product3?ref=",
+                "Product 3": "https://companydomain.com/product3?ref=",
+                "Product 3": "https://companydomain.com/product3?ref=",
+                "Product 3": "https://companydomain.com/product3?ref=",
+                "Product 3": "https://companydomain.com/product3?ref=",
+                "Product 3": "https://companydomain.com/product3?ref=",
+                "Product 3": "https://companydomain.com/product3?ref=",
+                "Product 3": "https://companydomain.com/product3?ref=",
+                "Product 3": "https://companydomain.com/product3?ref=",
+                "Product 3": "https://companydomain.com/product3?ref=",
+                "Product 3": "https://companydomain.com/product3?ref=",
+                "Product 3": "https://companydomain.com/product3?ref=",
+                // Add more products as needed
+            };
+
+
+
+            // const referralId = document.querySelector('meta[name="referral-id"]').content;
+            // const referralId = "affiliate1"; // Replace with dynamic referral IDs if needed
+            // const referralId = "THW5872"
+
+            // const timestamp = new Date().toISOString();
+            const timestamp = new Date().toLocaleString('en-GB', { timeZone: 'Asia/Kolkata' });
+
+            // Data to be sent to the backend
+            const clickData = {
+                referral_id: referralId,
+                product_name: productName,
+                click_time: timestamp,
+                customer_name: localStorage.firstName + " " + localStorage.lastName
+            };
+
+
+
+            // Send the POST request to the backend
+            fetch('http://127.0.0.1:5002/track_click', { // Updated to match backend
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(clickData)
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.message) {
+                        console.log(data.message); // Success message from the server
+                    } else if (data.error) {
+                        console.error(data.error); // Error message from the server
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+
+            // Redirect to the actual product link
+            // Redirect to the specific product link
+            if (productLinks[productName]) {
+                window.location.href = `${productLinks[productName]}${referralId}`;
+            } else {
+                console.error('Product link not found!');
+            }
+        }
+
+
+
+
+        counter = 0;
+
+        function updateCarousel() {
+            // console.log(`Counter: ${counter}`); // Debugging - check if function is being called
+
+            // Reset all banners to default size and style
+            document.querySelectorAll('.banner img').forEach((img) => {
+                img.classList.remove('enlarged');
+                img.style.zIndex = "0";
+                img.style.left = ""; // Reset left positioning
+            });
+
+            // Get screen width
+            const screenWidth = window.innerWidth;
+
+            // Calculate positions
+            const leftPosition = screenWidth * 0.05; // 5% of screen width
+            const middlePosition = screenWidth * 0.5; // 50% of screen width
+            const rightPosition = screenWidth * 0.95; // 95% of screen width
+
+            // Calculate the middle banner based on counter
+            const middleBannerIndex = counter % 3; // 0, 1, 2 (for 3 banners)
+            const leftBannerIndex = (middleBannerIndex - 1 + 3) % 3; // Wrap around for left banner
+            const rightBannerIndex = (middleBannerIndex + 1) % 3; // Wrap around for right banner
+
+            const middleBannerClass = `banner${middleBannerIndex + 1}`;
+            const leftBannerClass = `banner${leftBannerIndex + 1}`;
+            const rightBannerClass = `banner${rightBannerIndex + 1}`;
+
+            // Get the DOM elements for each banner
+            const middleBanner = document.querySelector(`.${middleBannerClass}`);
+            const leftBanner = document.querySelector(`.${leftBannerClass}`);
+            const rightBanner = document.querySelector(`.${rightBannerClass}`);
+
+            // Update middle banner
+            if (middleBanner) {
+                const bannerWidth = middleBanner.offsetWidth; // Get banner width
+                middleBanner.classList.add('enlarged');
+                middleBanner.style.zIndex = "1";
+                middleBanner.style.left = `${middlePosition - bannerWidth / 2}px`; // Centered
+            }
+
+            // Update left banner
+            if (leftBanner) {
+                leftBanner.style.zIndex = "0";
+                leftBanner.style.left = `${leftPosition}px`; // Left aligned
+            }
+
+            // Update right banner
+            if (rightBanner) {
+                const bannerWidth = rightBanner.offsetWidth; // Get banner width
+                rightBanner.style.zIndex = "0";
+                rightBanner.style.left = `${rightPosition - bannerWidth}px`; // Right aligned
+            }
+
+            // Increment the counter for the next rotation
+            counter++;
+        }
+
+
+        // Run the updateCarousel function every 5 seconds
+        setInterval(updateCarousel, 5000);
+
+        // Initialize the carousel on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log("Page loaded, initializing carousel"); // Debugging - confirm page load
+            updateCarousel(); // Run the carousel once on page load
+        });
+
+
+
+        // Initialize greeting
+        if (localStorage.getItem('firstName')) {
+            setGreeting();
+        }
+    </script>
+</body>
+
+</html>

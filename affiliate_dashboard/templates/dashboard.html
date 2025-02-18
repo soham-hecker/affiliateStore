@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Affiliate Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .dashboard-container {
+            max-width: 800px;
+            margin: auto;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        .stats {
+            display: flex;
+            justify-content: space-between;
+            margin: 20px 0;
+        }
+        .stats div {
+            background: #f4f4f4;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            width: 30%;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .stats div h2 {
+            margin: 0;
+            font-size: 1.5rem;
+            color: #555;
+        }
+        .stats div p {
+            margin: 5px 0 0;
+            color: #777;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        table th, table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        table th {
+            background: #f4f4f4;
+            color: #333;
+        }
+        table tr:hover {
+            background: #f9f9f9;
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <h1>Welcome, {{ name }}</h1>
+
+        <div class="stats">
+            <div>
+                <h2>{{ total_clicks }}</h2>
+                <p>Total Clicks</p>
+            </div>
+            <div>
+                <h2>{{ total_sales }}</h2>
+                <p>Total Sales</p>
+            </div>
+            <div>
+                <h2>{{ total_commission }}</h2>
+                <p>Total Commission (₹)</p>
+            </div>
+        </div>
+
+        <div class="stats">
+            <div>
+                <h2>{{ recent_clicks }}</h2>
+                <p>Clicks (Last 48 Hours)</p>
+            </div>
+            <div>
+                <h2>{{ recent_sales }}</h2>
+                <p>Sales (Last 48 Hours)</p>
+            </div>
+        </div>
+
+        <h2>Sales Details</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Product Name</th>
+                    <th>Commission (₹)</th>
+                    <th>Sale Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for sale in sales %}
+                <tr>
+                    <td>{{ sale['product_name'] }}</td>
+                    <td>{{ sale['commission'] }}</td>
+                    <td>{{ sale['sale_date'] }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

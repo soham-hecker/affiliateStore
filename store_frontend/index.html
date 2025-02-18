@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Affiliate Store</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        .header {
+            background-color: #f8f9fa;
+            padding: 10px;
+            text-align: center;
+        }
+
+        .header h1 {
+            margin: 0;
+        }
+
+        .products {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin: 20px;
+        }
+
+        .product {
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            margin: 10px;
+            padding: 10px;
+            width: 200px;
+            text-align: center;
+        }
+
+        .product img {
+            max-width: 100%;
+            height: auto;
+        }
+
+        .buy-now {
+            display: block;
+            text-decoration: none;
+            background-color: #007bff;
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 10px;
+        }
+
+        .buy-now:hover {
+            background-color: #0056b3;
+        }
+
+        .form-popup {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            border: 1px solid #ddd;
+            background-color: white;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            z-index: 1000;
+        }
+
+        .form-popup input {
+            display: block;
+            margin: 10px 0;
+            padding: 10px;
+            width: 100%;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        .form-popup button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .form-popup button:hover {
+            background-color: #0056b3;
+        }
+
+        .custom-alert {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #4caf50;
+            color: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            z-index: 1001;
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="header">
+        <h1 id="greeting">Welcome to Our Store!</h1>
+    </div>
+
+    <div id="signUpForm" class="form-popup">
+        <h2>Sign Up</h2>
+        <label for="firstName">First Name</label>
+        <input type="text" id="firstName" placeholder="Enter your first name" required>
+
+        <label for="lastName">Last Name</label>
+        <input type="text" id="lastName" placeholder="Enter your last name" required>
+
+        <label for="mobile">Mobile Number (Optional)</label>
+        <input type="text" id="mobile" placeholder="Enter your mobile number">
+
+        <button onclick="submitForm()">Submit</button>
+    </div>
+
+    <div class="products">
+        <!-- Product 1 -->
+        <div class="product">
+            <h3>Product 1</h3>
+            <img src="https://via.placeholder.com/150" alt="Product 1">
+            <a href="#" class="buy-now" onclick="trackClick('Product 1')">Buy Now</a>
+        </div>
+        <!-- Product 2 -->
+        <div class="product">
+            <h3>Product 2</h3>
+            <img src="https://via.placeholder.com/150" alt="Product 2">
+            <a href="#" class="buy-now" onclick="trackClick('Product 2')">Buy Now</a>
+        </div>
+        <!-- Add more products similarly -->
+    </div>
+
+    <script>
+        // Show sign-up form after 5 seconds if names are not stored
+        setTimeout(() => {
+            if (!localStorage.getItem('firstName') || !localStorage.getItem('lastName')) {
+                document.getElementById('signUpForm').style.display = 'block';
+            }
+        }, 5000);
+
+        // Set personalized greeting
+        function setGreeting() {
+            const hours = new Date().getHours();
+            const greeting = hours < 12 ? "Good Morning" :
+                hours < 18 ? "Good Afternoon" : "Good Evening";
+            const firstName = localStorage.getItem('firstName');
+            document.getElementById('greeting').textContent = firstName
+                ? `${greeting}, ${firstName}!`
+                : 'Welcome to Our Store!';
+        }
+
+        // Submit form
+        function submitForm() {
+            const firstName = document.getElementById('firstName').value;
+            const lastName = document.getElementById('lastName').value;
+            const mobile = document.getElementById('mobile').value;
+
+            if (firstName && lastName) {
+                localStorage.setItem('firstName', firstName);
+                localStorage.setItem('lastName', lastName);
+                if (mobile) {
+                    localStorage.setItem('mobile', mobile);
+                }
+                document.getElementById('signUpForm').style.display = 'none';
+                setGreeting();
+
+                // Show custom alert
+                const alertBox = document.createElement('div');
+                alertBox.className = 'custom-alert';
+                alertBox.textContent = 'Thank you for signing up!';
+                document.body.appendChild(alertBox);
+
+                setTimeout(() => {
+                    document.body.removeChild(alertBox);
+                }, 3000);
+            } else {
+                alert('First Name and Last Name are required fields.');
+            }
+        }
+
+        // Track clicks
+        function trackClick(productName) {
+        const referralId = "affiliate1"; // Replace with dynamic referral IDs if needed
+        const timestamp = new Date().toISOString();
+
+        // Data to be sent to the backend
+        const clickData = {
+            referral_id: referralId,
+            product_name: productName,
+            click_time: timestamp
+        };
+
+        // Send the POST request to the backend
+        fetch('/track_click_api', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(clickData)
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.message) {
+                console.log(data.message); // Success message from the server
+            } else if (data.error) {
+                console.error(data.error); // Error message from the server
+            }
+        })
+        .catch(error => console.error('Error:', error));
+
+        // Redirect to the actual product link
+        window.location.href = `https://companydomain.com/product-link?ref=${referralId}`;
+    }
+
+
+        // Initialize greeting
+        if (localStorage.getItem('firstName')) {
+            setGreeting();
+        }
+    </script>
+</body>
+
+</html>
